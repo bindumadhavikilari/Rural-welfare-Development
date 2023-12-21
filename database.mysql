@@ -1,0 +1,75 @@
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    role ENUM('admin', 'volunteer', 'user') NOT NULL,
+    mother_id INT,
+    father_id INT,
+    wife_id INT,
+    UNIQUE KEY (username),
+    UNIQUE KEY (email),
+    FOREIGN KEY (mother_id) REFERENCES users(id),
+    FOREIGN KEY (father_id) REFERENCES users(id),
+    FOREIGN KEY (wife_id) REFERENCES users(id)
+);
+
+
+ALTER TABLE users
+ADD COLUMN phone_number VARCHAR(20);
+ALTER TABLE users
+MODIFY COLUMN phone_number VARCHAR(20) NOT NULL;
+ALTER TABLE users
+ADD CONSTRAINT UNIQUE (phone_number);
+
+CREATE TABLE events (
+    event_id INT AUTO_INCREMENT PRIMARY KEY,
+    event_date DATETIME NOT NULL,
+    event_place VARCHAR(255) NOT NULL,
+    organizer_id INT NOT NULL,
+    FOREIGN KEY (organizer_id) REFERENCES users(id)
+);
+CREATE TABLE schemes (
+    scheme_id INT AUTO_INCREMENT PRIMARY KEY,
+    scheme_description TEXT  NOT NULL,
+    scheme_name VARCHAR(255) NOT NULL,
+    owner_id INT NOT NULL,
+    event_id INT NOT NULL,
+    problem_ids JSON,
+    FOREIGN KEY (owner_id) REFERENCES users(id),
+    FOREIGN KEY (event_id) REFERENCES events(event_id) ON DELETE CASCADE
+);
+
+CREATE TABLE problems (
+    problem_id INT AUTO_INCREMENT PRIMARY KEY,
+    problem_owner INT NOT NULL,
+    problem_sector VARCHAR(255) NOT NULL,
+    created_timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (problem_owner) REFERENCES users(id)
+);
+ALTER TABLE problems
+ADD COLUMN is_resolved BOOLEAN NOT NULL DEFAULT FALSE;
+ALTER TABLE problems
+ADD COLUMN problem_description TEXT;
+
+ALTER TABLE events
+ADD event_name VARCHAR(255);
+
+CREATE TABLE sectors (
+    sector_id INT AUTO_INCREMENT PRIMARY KEY,
+    sector_name VARCHAR(255) NOT NULL
+);
+INSERT INTO sectors (sector_name)
+VALUES
+    ('Agriculture'),
+    ('Education'),
+    ('Health'),
+    ('Finance'),
+    ('Art and Culture'),
+    ('Security and Defence'),
+    ('Forest'),
+    ('Others');
+    use vds;
+    DELETE FROM schemes WHERE scheme_description ='giving';
+    select * from schemes;
+    SET SQL_SAFE_UPDATES = 0;
